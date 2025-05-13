@@ -32,9 +32,9 @@ pygame          # GUI principal
 pywin32         # Proporciona win32api, win32con, win32gui
 ```
 
-### 📦 guide
+# 📦 Code Guide
 
-# 🧠 How TapTiles Works
+## 🧠 How TapTiles Works
 
 This section explains how the core script of **TapTiles** works, from reading arguments to rendering the interface and handling user interactions.
 
