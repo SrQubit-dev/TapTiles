@@ -33,6 +33,7 @@ def get_icon(exe_path, png_path):
                 # Si ya es un ícono, solo conviértelo
                 with Image.open(exe_path) as img:
                     img = img.resize((64,64))
+                    add_shadow(img)
                     img.save(png_path)
             else:
                 ico_path = png_path + ".temp.ico"
@@ -41,6 +42,7 @@ def get_icon(exe_path, png_path):
 
                 with Image.open(ico_path) as img:
                     img = img.resize((64,64))
+                    add_shadow(img)
                     img.save(png_path)
                 os.remove(ico_path)
 
@@ -58,36 +60,35 @@ def round_alpha(img,threshold):
     return clean_img
 
 def add_shadow(image, offset=(5, 5), background_color=(0, 0, 0, 0),shadow_color=(0, 0, 0, 200), blur_radius=0 ):
-    # Crear una imagen negra con la misma forma
+    # create a black image with the same form
     shadow = Image.new("RGBA", image.size, shadow_color)
 
-    # Crear máscara a partir del canal alfa de la imagen original
+    # create a mask from the alfa channel
     mask = image.split()[3]
 
-    # Aplicar la máscara al color de sombra
+    # Apply mask to the shadow color 
     adjusted_mask = mask.point(lambda p: p * (shadow_color[3] / 255))
     shadow.putalpha(adjusted_mask)
 
-    # Crear un lienzo más grande para la sombra + original
+    # expand image to fit shadow
     total_size = (image.width + abs(offset[0]) + blur_radius * 2,
                   image.height + abs(offset[1]) + blur_radius * 2)
     final_image = Image.new("RGBA", total_size, background_color)
 
-    # Posición de la sombra
     shadow_position = (blur_radius + max(offset[0], 0),
                        blur_radius + max(offset[1], 0))
     
-    # Aplicar desenfoque
+    # Apply bulr
     blurred_shadow = shadow.filter(ImageFilter.GaussianBlur(blur_radius))
 
-    # Pegar sombra
+    # paste shadow
     final_image.paste(blurred_shadow, shadow_position, blurred_shadow)
 
-    # Posición de la imagen original
+    # original image position
     image_position = (blur_radius - min(offset[0], 0),
                       blur_radius - min(offset[1], 0))
 
-    # Pegar imagen original encima
+    # paste original image on top
     final_image.paste(image, image_position, image)
 
     return final_image
