@@ -4,7 +4,7 @@ import os
 def save_folder_data(file_path, folder_name, apps):
     data = {}
 
-    # Cargar archivo si existe
+    # load file if exists
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as file:
             try:
@@ -12,10 +12,10 @@ def save_folder_data(file_path, folder_name, apps):
             except json.JSONDecodeError:
                 data = {}
 
-    # Actualizar solo la entrada del folder
+    # update folder data
     data[folder_name] = {"apps": apps}
 
-    # Guardar archivo con la nueva estructura
+    # save file with new structure
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4)
 
@@ -30,7 +30,9 @@ def load_apps_from_folder(file_path, folder_name):
         except json.JSONDecodeError:
             return []
 
-# USAGE:
+
+### USAGE:
+
 # save_folder_data("data.json","Folder",["app1","app2"])
 
 # apps = load_apps_from_folder("data.json", "Folder")
